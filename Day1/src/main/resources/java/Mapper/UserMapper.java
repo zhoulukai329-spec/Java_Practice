@@ -5,7 +5,7 @@ import main.resources.java.Entity.*;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public class UserMapper {
+public interface UserMapper {
     User findById(Long id);
 
     User findByName(String nickname);
