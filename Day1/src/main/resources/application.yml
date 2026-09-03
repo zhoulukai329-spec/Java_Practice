@@ -6,14 +6,13 @@ spring:
     name: demo
 
   datasource:
-    url: jdbc:mysql://localhost:3306/demo
+    url: jdbc:mysql://localhost:3306/demo?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.iwhalecloud.oss.res.aop
+  type-aliases-package: com.example.demo.entity
   configuration:
     map-underscore-to-camel-case: true
-    jdbc-type-for-null: 'NULL'

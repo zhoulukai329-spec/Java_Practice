@@ -1,23 +1,24 @@
-package main.resources.java.Mapper;
+package com.example.demo.mapper;
 
-import main.resources.java.Entity.*;
+import java.util.List;
 
+import com.example.demo.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserMapper {
+
     User findById(Long id);
 
     User findByName(String nickname);
 
     int insert(User user);
 
-    int deleteByID(Long id);
+    int deleteById(Long id);
 
     int deleteByName(String nickname);
 
-    int updateInfo(Long id);
+    int updateInfo(User user);
 
     List<User> getAll();
-
 }

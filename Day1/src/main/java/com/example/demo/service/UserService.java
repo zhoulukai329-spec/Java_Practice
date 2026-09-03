@@ -1,18 +1,14 @@
-package main.resources.java.Service;
+package com.example.demo.service;
 
-import main.resources.java.Entity.*;
-import org.apache.ibatis.annotations.userMapper;
+import java.util.List;
 
-/**
- * 本项目是一个用户管理系统，包含以下功能：
- * 查询用户
- * 查询单个用户
- * 新增用户
- * 修改用户信息（密码、昵称等）
- * 删除用户
- */
+import com.example.demo.entity.User;
+import com.example.demo.mapper.UserMapper;
+import org.springframework.stereotype.Service;
+
 @Service
 public class UserService {
+
     private final UserMapper userMapper;
 
     public UserService(UserMapper userMapper) {
@@ -28,23 +24,22 @@ public class UserService {
     }
 
     public int insert(User user) {
-        userMapper.insert(user);
+        return userMapper.insert(user);
     }
 
-    public int deleteByID(Long id) {
-        userMapper.deleteByID(id);
+    public int deleteById(Long id) {
+        return userMapper.deleteById(id);
     }
 
     public int deleteByName(String nickname) {
-        userMapper.deleteByName(nickname);
+        return userMapper.deleteByName(nickname);
     }
 
-    public int update(Long id) {
-        userMapper.updateInfo(id);
+    public int update(User user) {
+        return userMapper.updateInfo(user);
     }
 
     public List<User> getAll() {
         return userMapper.getAll();
     }
-
 }
