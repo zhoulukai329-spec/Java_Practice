@@ -39,8 +39,8 @@ public class UserService {
         userMapper.deleteByName(nickname);
     }
 
-    public int update(User user) {
-        userMapper.updateInfo(user);
+    public int update(Long id) {
+        userMapper.updateInfo(id);
     }
 
     public List<User> getAll() {

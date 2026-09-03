@@ -16,7 +16,7 @@ public interface UserMapper {
 
     int deleteByName(String nickname);
 
-    int updateInfo(User user);
+    int updateInfo(Long id);
 
     List<User> getAll();
 
