@@ -5,7 +5,7 @@ package main.resources.java.Entity;
  * 用户信息应该包含如下内容：id、昵称、年龄、密码。
  */
 
-public class UserEntity {
+public class User {
     private Long id;
     private String nickname;
     private int age;

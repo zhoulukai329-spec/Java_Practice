@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<mapper namespace="mapper.UserMapper">
+
+    <select id="findById" resultType="Controller.User">
+        SELECT *
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByName" resultType="Controller.User">
+        SELECT *
+        FROM user
+        WHERE nickname = #{nickname}
+    </select>
+
+    <select id="insert">
+        INSERT INTO user 
+        (id, nickname, age, password)
+        VALUES 
+        (#{id},#{nickname},#{age},#{password})
+    </select>
+
+    <select id="deleteByID">
+        DELETE FROM user WHERE id = #{id}
+    </select>
+
+    <select id="deleteByName">
+        DELETE FROM user WHERE nickname = #{nickname}
+    </select>
+
+    <select id="updateInfo">
+        UPDATE user
+        SET
+        nickname = #{nickname},
+        password = #{password}
+        WHERE id = #{id}
+    </select>
+
+    <select id="getAll", returnType="Controller.User">
+        SELECT * FROM user;
+    </select>
+</mapper>
