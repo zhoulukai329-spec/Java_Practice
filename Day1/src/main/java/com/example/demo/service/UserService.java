@@ -42,4 +42,16 @@ public class UserService {
     public List<User> getAll() {
         return userMapper.getAll();
     }
+
+    public User userLogin(String nickname, String password) {
+        User user = userMapper.findByName(nickname);
+        if (nickname == null) {
+            System.out.println("Error, no account named " + nickname);
+        }
+        if (user.getPassword() != password) {
+            System.out.println("Password wrong!");
+        }
+        return user;
+
+    }
 }

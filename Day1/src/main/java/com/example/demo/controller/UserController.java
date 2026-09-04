@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/framework_dynconfig-1.1.0")
 public class UserController {
 
     private final UserService userService;
@@ -57,5 +57,10 @@ public class UserController {
     @GetMapping
     public List<User> getAll() {
         return userService.getAll();
+    }
+
+    @PostMapping("/login")
+    public User userLogin(@RequestBody String nickname, @RequestBody String password) {
+        return userService.userLogin(nickname, password);
     }
 }
