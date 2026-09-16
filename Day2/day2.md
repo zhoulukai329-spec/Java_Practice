@@ -576,3 +576,19 @@ public class GlobalException{
 
 }
 ```
+
+- c. RestControllerAdvice
+RestControllerAdvice与ControllerAdvice的区别是返回值的区别：
+| 注解                      | 主要用途                     |
+| ----------------------- | ------------------------ |
+| `@ControllerAdvice`     | 全局 Controller 增强         |
+| `@RestControllerAdvice` | 全局 Controller 增强 + 返回*响应体* |
+
+也就是说：ControllerAdvice一般只返回String，而RestControllerAdvice会返回响应体json：
+```json
+{
+    "code": 400,
+    "message": "用户不存在",
+    "data": null
+}
+```
