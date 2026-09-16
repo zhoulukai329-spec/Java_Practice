@@ -60,7 +60,7 @@ public class Application {
 UserService service = new Userservice();
 ```
 
-而Spring会自动创建、管理、注入UserService，而不用单独封装单独调用，
+而Spring会自动创建、管理、注入UserService，而不用单独调用，
 ```java
 @Service
 public class UserService{
@@ -78,6 +78,32 @@ public class UserController{
 }
 ```
 Spring 会自动找到 UserService Bean ，然后创建RestController，然后把UserService注入
+
+bean和entity的区别：bean是spring自动创建类（如service等），entity是用户定义类。
+注意：bean也可以手动编写
+```java
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public UserService userService() {
+        return new UserService();
+    }
+}
+```
+这里编写了UserService，后文同样也可以直接注入Controller或其他地方：
+```java
+@RestController
+public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+}
+```
+
 
 ### 1.3 核心语法Controller
 
@@ -646,4 +672,20 @@ public void transfer(){
     userService.giveMoney(1,500);//如果没用transactional，这一步会得到-499并报错，下一步不执行，所以用户被无缘无故扣款
     userService.getMoney(2,500);//现在有了transactional，第一步就会报错然后rollback，用户资产仍然为1.
 }
+```
+
+这一节的tutorial部分是一个学生饭卡管理系统。主要实现学生基本信息录入、学生饭卡充值/扣款功能、错误告警功能、挂失功能（换id，其他不变，理解为先注销，再注册，余额顺延，所以id不同，其余相同）。
+
+开发顺序应为：
+```
+确定application.yml,确定stdCardMapper.xml
+↓
+根据stdCardMapper.xml编写src/entity/
+和src/Mapper/cardMapper.java
+↓
+根据src/Mapper/cardMapper.java编写src/service/cardService.java
+↓
+根据src/service/cardService.java编写src/service/cardController.java
+↓
+编写src/aop/globalExceptionLogs.java
 ```
