@@ -626,6 +626,14 @@ public class userController{
 // Exception
 @RestControllerService
 public class GlobalExceptionLog{
-    
+    @ExceptionHandler(RuntimeException.class)
+    public String runtimeError(RuntimeException e){
+        return "Warning:" + e.getMessage();
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public String NullPointerError(NullPointerException e){
+        return "Warning:" + e.getMessage();
+    }
 }
 ```
