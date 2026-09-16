@@ -592,3 +592,40 @@ RestControllerAdvice与ControllerAdvice的区别是返回值的区别：
     "data": null
 }
 ```
+
+所以综合来看，整个业务层（Service + Controller + AOP(Exception)）如下：
+```java
+//Service
+@Service
+public class userService{
+    public User getUserById(Integer id){
+        User user = userMapper.getUserById(id);
+
+        if(user == NULL){
+            throw new RuntimeException("用户不存在"); // 如果触发，传e
+        }
+
+        return user;
+    }
+}
+```
+
+```java
+// Controller
+@RestController
+@GetMapping("/users")
+public class userController{
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Integer id){
+        return userService.getUserById(id);
+    }
+}
+```
+
+```java
+// Exception
+@RestControllerService
+public class GlobalExceptionLog{
+    
+}
+```
