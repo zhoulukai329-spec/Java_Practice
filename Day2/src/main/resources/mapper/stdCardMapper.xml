@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper_2.cardMapper">
+
+    <select id="checkMoneyByStdId" resultType="java.lang.Float">
+        SELECT money
+        FROM `studentCard`
+        WHERE studentId = #{studentId}
+    </select>
+
+    <update id="topUp">
+        UPDATE `studentCard`
+        SET money = money + #{money}
+        WHERE studentId = #{studentId}
+    </update>
+
+    <update id="lostCard">
+        UPDATE `studentCard`
+        SET studentId = #{studentId}
+        WHERE name = #{name}
+    </update>
+
+    <update id="resetPassword">
+        UPDATE `studentCard`
+        SET password = #{password}
+        WHERE studentId = #{studentId}
+    </update>
+
+    <update id="transaction">
+        UPDATE `studentCard`
+        SET money = money - #{money}
+        WHERE studentId = #{studentId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM `studentCard` WHERE studentId = #{studentId}
+    </delete>
+
+    <insert id="insert">
+        INSERT INTO `studentCard` (studentId, name, password, money)
+        VALUES (#{studentId}, #{name}, #{password}, #{money})
+    </insert>
+
+</mapper>

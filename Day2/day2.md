@@ -680,7 +680,7 @@ public void transfer(){
 ```
 确定application.yml,确定stdCardMapper.xml
 ↓
-根据stdCardMapper.xml编写src/entity/
+根据stdCardMapper.xml编写src/entity/和src/DTO
 和src/Mapper/cardMapper.java
 ↓
 根据src/Mapper/cardMapper.java编写src/service/cardService.java
