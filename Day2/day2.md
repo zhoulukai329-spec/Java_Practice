@@ -383,7 +383,196 @@ mybatis:
 
 ### 1.9 DTO 和 VO
 在项目中，非常不推荐直接用 前端→Entity→数据库 的链路读取， 然后用 数据库→Entity→前端 的链路返回。因为有些敏感信息会暴露，因为传的数据中极大可能包含个人账号和密码。
-所以DTO和VO最大的作用就是让前端不能直接操作数据库实体Entity。
+所以DTO和VO最大的作用就是让前端不能直接操作数据库实体Entity，而是只能操作DTO中包含的元素，防止其他不应被修改的元素受到影响。
+
 - a. DTO
+DTO用于控制接收的字段，防止前端发送无论什么都能传来后端修改的情况。
+假设Entity中的User user如下：
+```java
+public class UserEntity{
+    private Long id;
 
+    private String username;
 
+    private String password;
+
+    private Integer age;
+
+    private LocalDateTime createTime;
+}
+```
+
+但是系统用户修改信息时，是无法修改id和createTime的。所以前端接口实际上只需要传：
+```json
+{
+    "username": "Tom",
+    "password": "123456",
+    "age": 20
+}
+```
+
+所以可以定义DTO
+```java
+public class UserCreateDTO {
+
+    private String username;
+
+    private String password;
+
+    private Integer age;
+
+}
+```
+这样就能限制前端，不修改id和createTime，架构更安全更清晰。
+
+- b. VO
+VO 用于控制后端的返回，防止后端把敏感信息暴露。
+假设数据库里有用户的密码，而且绝对不允许返回密码到前端。那么就应该定义VO：
+```java
+public class UserVO {
+
+    private Long id;
+
+    private String username;
+
+    private Integer age;
+
+    private LocalDateTime createTime;
+
+}
+```
+
+所以，DTO,VO,Entity应该保持以下关系：
+```
+DTO = 前端 → 后端
+
+Entity = 后端 ↔ 数据库
+
+VO = 后端 → 前端
+```
+
+- c. 参数校验
+参数校验是用来检查参数是否符合要求的注解。
+常见的参数校验注解如下：
+| 注解                | 作用                   |
+| ----------------- | -------------------- |
+| `@NotNull`        | 不能为 `null`           |
+| `@NotEmpty`       | 不能为 `null`，也不能为空     |
+| `@NotBlank`       | 字符串不能为 null、空字符串、全空格 |
+| `@Min(1)`         | 数字最小值                |
+| `@Max(100)`       | 数字最大值                |
+| `@Positive`       | 必须 > 0               |
+| `@PositiveOrZero` | 必须 ≥ 0               |
+| `@Negative`       | 必须 < 0               |
+| `@Size`           | 字符串/集合长度限制           |
+| `@Email`          | Email 格式             |
+| `@Pattern`        | 正则表达式                |
+| `@Past`           | 必须是过去日期              |
+| `@Future`         | 必须是未来日期              |
+| `@DecimalMin`     | 小数最小值                |
+| `@DecimalMax`     | 小数最大值                |
+| `@Digits`         | 限制整数和小数位数            |
+| `@AssertTrue`     | 必须为 true             |
+| `@AssertFalse`    | 必须为 false            |
+
+例如建立DTO的过程中，
+```java
+public class createUserDTO{
+    @NotBlank(message = "用户名不能为空")
+    private String name; // 名字不为空，可以自己加报错信息
+
+    @Min(18)
+    private Integer age; // 年龄大于18岁
+}
+```
+
+那么在Controller调用的时候，就可以用@Valid来检查createUserDTO里的所有变量是否符合注解的校验条件。
+```java
+@RestController
+public class UserController{
+    @PostMapping
+    public void addUser(@Valid @RequestBody createUserDTO user){
+        userService.addUser(user);
+    }
+}
+```
+
+这里的@Valid会校验传来的createUserDTO类型user中的参数是否符合刚才定义DTO中的要求。
+另外，@Valid还可以进行嵌套验证。比如：
+```java
+public class AddressDTO{
+    @NotBlank
+    private String city;
+
+    @NotBlank
+    private String street;
+}
+public class UserInfo{
+    @NotBlank
+    private String username;
+    
+    @Valid
+    private AddressDTO address;
+}
+```
+这在多复用的复杂项目里非常常见。
+
+### 1.10 异常值处理
+除了刚才提到的在校验注解之后加报错信息以外，还有专门用来写报错日志的注解。
+最常用的是以下三个：
+```java
+@ExceptionHandler //指定这个方法负责处理什么异常
+@RestControllerAdvice
+@ControllerAdvice
+```
+
+- a. ExceptionHandler
+指定“这个方法负责处理哪一种异常”。例如：
+```java
+@ExceptionHandler(RuntimeException.class)
+public String runtimeErrorLog(RuntimeException e){
+    return "错误原因:" + e.getMessage();
+}
+```
+这里的`@ExceptionHandler(RuntimeException.class)`表示如果出现RuntimeException，就调用runtimeErrorLog方法。
+ExceptionHandler通常放在Controller中。
+```java
+@RestController
+public class UserController {
+
+    @GetMapping("/users/{id}")
+    public String getUser(@PathVariable Integer id) {
+
+        if (id <= 0) {
+            throw new RuntimeException("id不能小于等于0");
+        }
+
+        return "success";
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public String handleException(RuntimeException e) {
+        return "错误原因：" + e.getMessage();
+    }
+}
+```
+
+但是每一个Controller都有可能报错，如果要在每一个Controller中都写至少一个ExceptionHandler，项目会变得不清晰。所以，我们需要@ControllerAdvice
+
+- b. ControllerAdvice
+这能够创建一个报错信息的集合：
+```java
+@ControllerAdvice
+public class GlobalException{
+    @ExceptionHandler(RuntimeException.class)
+    public String runtimeError(RuntimeException e){
+        return "Error:" + e.getMessage();
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public String NullPointerError(NullPointerException e){
+        return "Error:" + e.getMessgae();
+    }
+
+}
+```
