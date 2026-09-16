@@ -637,3 +637,13 @@ public class GlobalExceptionLog{
     }
 }
 ```
+
+1.11 Transactional
+@Transactional 是专门为转账等操作设计的注解，通常放Service层，用于确保只有在转账全流程无误才会commit，否则rollback。
+```java
+@Transactional
+public void transfer(){
+    userService.giveMoney(1,500);//如果没用transactional，这一步会得到-499并报错，下一步不执行，所以用户被无缘无故扣款
+    userService.getMoney(2,500);//现在有了transactional，第一步就会报错然后rollback，用户资产仍然为1.
+}
+```
