@@ -1,23 +1,23 @@
-package com.example.demo.entity_2;
+package com.example.demo.entity;
 
-public class cardEntity {
+import java.math.BigDecimal;
 
-    private String studentId; // 学号
+public class CardEntity {
+    private String studentId;
+    private String name;
+    private String password;
+    private BigDecimal money;
+    private String status;
 
-    private String name; // 学生姓名
-
-    private String password; // 饭卡密码
-
-    private float money; // 余额
-
-    public cardEntity() {
+    public CardEntity() {
     }
 
-    public cardEntity(String studentId, String name, String password, float money) {
+    public CardEntity(String studentId, String name, String password, BigDecimal money, String status) {
         this.studentId = studentId;
         this.name = name;
         this.password = password;
         this.money = money;
+        this.status = status;
     }
 
     public String getStudentId() {
@@ -44,11 +44,19 @@ public class cardEntity {
         this.password = password;
     }
 
-    public float getMoney() {
+    public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(float money) {
+    public void setMoney(BigDecimal money) {
         this.money = money;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
