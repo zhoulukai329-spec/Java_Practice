@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.CardMapper">
+
+    <select id="findByStudentId" resultType="com.example.demo.entity.CardEntity">
+        SELECT studentId, name, password, money, status
+        FROM studentCard
+        WHERE studentId = #{studentId}
+    </select>
+
+    <select id="checkMoneyByStudentId" resultType="java.math.BigDecimal">
+        SELECT money
+        FROM studentCard
+        WHERE studentId = #{studentId}
+    </select>
+
+    <update id="topUp">
+        UPDATE studentCard
+        SET money = money + #{amount}
+        WHERE studentId = #{studentId}
+          AND status = 'ACTIVE'
+    </update>
+
+    <update id="markLost">
+        UPDATE studentCard
+        SET status = 'LOST'
+        WHERE studentId = #{studentId}
+          AND status = 'ACTIVE'
+    </update>
+
+    <update id="resetPassword">
+        UPDATE studentCard
+        SET password = #{password}
+        WHERE studentId = #{studentId}
+    </update>
+
+    <update id="deduct">
+        UPDATE studentCard
+        SET money = money - #{amount}
+        WHERE studentId = #{studentId}
+          AND status = 'ACTIVE'
+          AND money &gt;= #{amount}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM studentCard
+        WHERE studentId = #{studentId}
+    </delete>
+
+    <insert id="insert">
+        INSERT INTO studentCard (studentId, name, password, money, status)
+        VALUES (#{studentId}, #{name}, #{password}, #{money}, #{status})
+    </insert>
+
+</mapper>
